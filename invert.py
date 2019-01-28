@@ -134,14 +134,14 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
         tot_loss = alpha_lambda*alpha_term + tv_lambda*tv_term + loss_term
 
         if (i+1) % print_iter == 0:
-            print "alpha_term.data.cpu().numpy().shape ", alpha_term.data.cpu().numpy()
-            print "tv_term.data.cpu().numpy().shape ", tv_term.data.cpu().numpy()
-            print "loss_term.data.cpu().numpy()[0].shape ", loss_term.data.cpu().numpy()[0]
-            print "tot_loss.data.cpu().numpy()[0].shape ", tot_loss.data.cpu().numpy()[0]
+            #print "alpha_term.data.cpu().numpy().shape ", alpha_term.data.cpu().numpy()
+            #print "tv_term.data.cpu().numpy().shape ", tv_term.data.cpu().numpy()
+            #print "loss_term.data.cpu().numpy()[0].shape ", loss_term.data.cpu().numpy()[0]
+            #print "tot_loss.data.cpu().numpy()[0].shape ", tot_loss.data.cpu().numpy()[0]
 
             print('Epoch %d:\tAlpha: %f\tTV: %f\tLoss: %f\tTot Loss: %f' % (i+1,
-                alpha_term.data.cpu().numpy()[0], tv_term.data.cpu().numpy()[0],
-                loss_term.data.cpu().numpy()[0], tot_loss.data.cpu().numpy()[0]))
+                alpha_term.data.cpu().numpy(), tv_term.data.cpu().numpy(),
+                loss_term.data.cpu().numpy(), tot_loss.data.cpu().numpy()))
 
         optimizer.zero_grad()
         tot_loss.backward()
