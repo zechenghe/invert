@@ -63,6 +63,7 @@ def decay_lr(optimizer, factor):
 
 def get_pytorch_module(net, blob):
     modules = blob.split('.')
+    print modules
     if len(modules) == 1:
         return net._modules.get(blob)
     else:
