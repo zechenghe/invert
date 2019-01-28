@@ -11,6 +11,7 @@ import numpy as np
 import os
 
 import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 from PIL import Image
 
