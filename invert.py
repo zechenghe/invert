@@ -36,7 +36,7 @@ class Denormalize(object):
     def __init__(self, mean, std):
         self.mean = mean
         self.std = std
-    
+
     def __call__(self, tensor):
         for t, m, s in zip(tensor, self.mean, self.std):
             t.mul_(s).add_(m)
@@ -57,7 +57,7 @@ class Clip(object):
 #function to decay the learning rate
 def decay_lr(optimizer, factor):
     for param_group in optimizer.param_groups:
-        param_group['lr'] *= factor 
+        param_group['lr'] *= factor
 
 
 def get_pytorch_module(net, blob):
@@ -71,9 +71,9 @@ def get_pytorch_module(net, blob):
         return curr_m
 
 
-def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta=2, 
-        alpha_lambda=1e-5,  tv_lambda=1e-5, epochs=200, learning_rate=1e2, 
-        momentum=0.9, decay_iter=100, decay_factor=1e-1, print_iter=25, 
+def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta=2,
+        alpha_lambda=1e-5,  tv_lambda=1e-5, epochs=200, learning_rate=1e2,
+        momentum=0.9, decay_iter=100, decay_factor=1e-1, print_iter=25,
         cuda=False):
 
     mu = [0.485, 0.456, 0.406]
@@ -105,7 +105,7 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
     def hook_acts(module, input, output):
         activations.append(output)
 
-    def get_acts(model, input): 
+    def get_acts(model, input):
         del activations[:]
         _ = model(input)
         assert(len(activations) == 1)
@@ -115,9 +115,8 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
     input_var = Variable(img_.cuda() if cuda else img_)
     ref_acts = get_acts(model, input_var).detach()
 
-    x_ = Variable((1e-3 * torch.randn(*img_.size()).cuda() if cuda else 
+    x_ = Variable((1e-3 * torch.randn(*img_.size()).cuda() if cuda else
         1e-3 * torch.randn(*img_.size())), requires_grad=True)
-
 
     alpha_f = lambda x: alpha_prior(x, alpha=alpha)
     tv_f = lambda x: tv_norm(x, beta=beta)
@@ -135,6 +134,11 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
         tot_loss = alpha_lambda*alpha_term + tv_lambda*tv_term + loss_term
 
         if (i+1) % print_iter == 0:
+            print "alpha_term.data.cpu().numpy().shape ", alpha_term.data.cpu().numpy().shape
+            print "tv_term.data.cpu().numpy().shape ", tv_term.data.cpu().numpy().shape
+            print "loss_term.data.cpu().numpy()[0].shape ", loss_term.data.cpu().numpy()[0].shape
+            print "tot_loss.data.cpu().numpy()[0].shape ", tot_loss.data.cpu().numpy()[0].shape
+
             print('Epoch %d:\tAlpha: %f\tTV: %f\tLoss: %f\tTot Loss: %f' % (i+1,
                 alpha_term.data.cpu().numpy()[0], tv_term.data.cpu().numpy()[0],
                 loss_term.data.cpu().numpy()[0], tot_loss.data.cpu().numpy()[0]))
@@ -191,14 +195,12 @@ if __name__ == '__main__':
                 os.environ['CUDA_VISIBLE_DEVICES'] = '%d' % gpu
         print(torch.cuda.device_count(), use_mult_gpu, cuda)
 
-        invert(image=args.image, network=args.network, layer=args.layer, 
-                alpha=args.alpha, beta=args.beta, alpha_lambda=args.alpha_lambda, 
+        invert(image=args.image, network=args.network, layer=args.layer,
+                alpha=args.alpha, beta=args.beta, alpha_lambda=args.alpha_lambda,
                 tv_lambda=args.tv_lambda, epochs=args.epochs,
-                learning_rate=args.learning_rate, momentum=args.momentum, 
+                learning_rate=args.learning_rate, momentum=args.momentum,
                 print_iter=args.print_iter, decay_iter=args.decay_iter,
                 decay_factor=args.decay_factor, cuda=cuda)
     except:
         traceback.print_exc(file=sys.stdout)
         sys.exit(1)
-
-
