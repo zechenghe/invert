@@ -74,7 +74,7 @@ def get_pytorch_module(net, blob):
 def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta=2,
         alpha_lambda=1e-5,  tv_lambda=1e-5, epochs=200, learning_rate=1e2,
         momentum=0.9, decay_iter=100, decay_factor=1e-1, print_iter=25,
-        cuda=False):
+        cuda=False, save_img_dir = './AlexNet/'):
 
     mu = [0.485, 0.456, 0.406]
     sigma = [0.229, 0.224, 0.225]
@@ -156,7 +156,8 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
     for a in ax:
         a.set_xticks([])
         a.set_yticks([])
-    plt.show()
+    plt.axis('off')
+    plt.savefig(save_img_dir + image.split('.')[0] + "_invert" + '.png')
 
 
 if __name__ == '__main__':
