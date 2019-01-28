@@ -95,6 +95,9 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
     ])
 
     model = models.__dict__[network](pretrained=True)
+    print "models.__dict__", models.__dict__
+    print "model ", model
+
     model.eval()
     if cuda:
         model.cuda()
