@@ -158,6 +158,9 @@ def invert(image, network='alexnet', size=227, layer='features.4', alpha=6, beta
         a.set_xticks([])
         a.set_yticks([])
     plt.axis('off')
+
+    if not os.path.exists(save_img_dir):
+        os.makedirs(save_img_dir)
     plt.savefig(save_img_dir + image.split('.')[0] + "_invert" + '.png')
 
 
