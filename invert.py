@@ -68,6 +68,7 @@ def get_pytorch_module(net, blob):
         return net._modules.get(blob)
     else:
         curr_m = net
+        print curr_m
         for m in modules:
             curr_m = curr_m._modules.get(m)
         return curr_m
